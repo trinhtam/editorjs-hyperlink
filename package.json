@@ -1,5 +1,5 @@
 {
-  "name": "@editorjs/hyperlink",
+  "name": "editorjs-hyperlink",
   "version": "1.0.0",
   "description": "Link with target & rel attribute for Editor.js",
   "main": "./dist/bundle.js",

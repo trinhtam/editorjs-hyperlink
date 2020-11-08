@@ -17,13 +17,13 @@ A tool link with target & rel attribute for [Editor.js](https://editorjs.io).
 Get the package
 
 ```shell
-npm i --save-dev @editorjs/hyperlink
+npm i --save-dev editorjs-hyperlink
 ```
 
 Include module at your application
 
 ```javascript
-const Hyperlink = require('@editorjs/hyperlink');
+const Hyperlink = require('editorjs-hyperlink');
 ```
 
 ## Usage
