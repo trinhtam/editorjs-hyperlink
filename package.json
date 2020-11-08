@@ -1,0 +1,39 @@
+{
+  "name": "@editorjs/hyperlink",
+  "version": "1.0.0",
+  "description": "Link with target & rel attribute for Editor.js",
+  "main": "./dist/bundle.js",
+  "scripts": {
+    "build": "webpack --mode production",
+    "build:dev": "webpack --mode development --watch"
+  },
+  "keywords": [
+    "codex editor",
+    "inline tool link",
+    "target inline tool",
+    "rel inline tool",
+    "editor.js",
+    "editorjs"
+  ],
+  "author": "TamIT <tam.maris94@gmail.com> (https://tamit.info)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trinhtam/editorjs-hyperlink.git"
+  },
+  "homepage": "https://github.com/trinhtam/editorjs-hyperlink",
+  "bugs": {
+    "url": "https://github.com/trinhtam/editorjs-hyperlink/issues"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.2",
+    "@babel/preset-env": "^7.10.2",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^3.5.3",
+    "raw-loader": "^4.0.1",
+    "style-loader": "^1.2.1",
+    "webpack": "^4.29.5",
+    "webpack-cli": "^3.2.3"
+  },
+  "dependencies": {}
+}
