@@ -2,10 +2,6 @@ const path = require('path');
 
 module.exports = {
     entry: './src/Hyperlink.js',
-    resolve: {
-        modules: [path.join(__dirname, 'src'),  'node_modules'],
-        extensions: ['.js', '.ts']
-    },
     module: {
         rules: [
             {
@@ -15,9 +11,9 @@ module.exports = {
                     {
                         loader: 'babel-loader',
                         query: {
-                            presets: [ '@babel/preset-env' ]
-                        }
-                    }
+                            presets: [ '@babel/preset-env' ],
+                        },
+                    },
                 ]
             },
             {
@@ -38,10 +34,11 @@ module.exports = {
         ]
     },
     output: {
-        path: path.join(__dirname, 'dist'),
+        path: path.join(__dirname, '/dist'),
         publicPath: '/',
         filename: 'bundle.js',
         library: 'Hyperlink',
+        libraryExport: 'default',
         libraryTarget: 'umd'
     }
 };

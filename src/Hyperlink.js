@@ -1,9 +1,9 @@
 import SelectionUtils from "./SelectionUtils";
-import './Hyperlink.css';
+import css from './Hyperlink.css';
 
-class Hyperlink {
+export default class Hyperlink {
 
-    constructor({ api, config }) {
+    constructor({ data, config, api, readOnly }) {
         this.toolbar = api.toolbar;
         this.inlineToolbar = api.inlineToolbar;
         this.tooltip = api.tooltip;
@@ -330,5 +330,3 @@ class Hyperlink {
         element.add(option);
     }
 }
-
-export default Hyperlink;
