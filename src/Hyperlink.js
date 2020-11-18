@@ -242,15 +242,15 @@ export default class Hyperlink {
             this.closeActions();
         }
 
-        if (!this.validateURL(value)) {
-            this.tooltip.show(this.nodes.input, 'Pasted link is not valid.', {
-                placement: 'top',
-            });
-            setTimeout(() => {
-                this.tooltip.hide();
-            }, 1000);
-            return;
-        }
+        // if (!this.validateURL(value)) {
+        //     this.tooltip.show(this.nodes.input, 'Pasted link is not valid.', {
+        //         placement: 'top',
+        //     });
+        //     setTimeout(() => {
+        //         this.tooltip.hide();
+        //     }, 1000);
+        //     return;
+        // }
 
         value = this.prepareLink(value);
 
