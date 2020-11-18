@@ -90,12 +90,19 @@ export default class Hyperlink {
             this.addOption(this.nodes.selectTarget, this.targetAttributes[i], this.targetAttributes[i]);
         }
 
+        if(!!this.config.target) {
+            this.nodes.selectTarget.value = this.config.target;
+        }
+
         // Rel
         this.nodes.selectRel = document.createElement('select');
         this.nodes.selectRel.classList.add(this.CSS.selectRel);
         this.addOption(this.nodes.selectRel, '-- Rel --', '');
         for (i=0; i<this.relAttributes.length; i++) {
             this.addOption(this.nodes.selectRel, this.relAttributes[i], this.relAttributes[i]);
+        }
+        if(!!this.config.rel) {
+            this.nodes.selectRel.value = this.config.rel;
         }
 
         // Button

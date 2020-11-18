@@ -39,6 +39,8 @@ var editor = EditorJS({
       class: Hyperlink,
       config: {
          shortcut: 'CMD+L',
+         target: '_blank', // default null
+         rel: 'nofollow', // default null
       }     
     },
     ...
