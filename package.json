@@ -1,6 +1,6 @@
 {
   "name": "editorjs-hyperlink",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Link with target & rel attribute for Editor.js",
   "main": "./dist/bundle.js",
   "scripts": {
