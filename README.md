@@ -12,12 +12,15 @@ A tool link with target & rel attribute for [Editor.js](https://editorjs.io).
 
 ## Installation
 
-### Install via NPM
-
-Get the package
+### Get the package via NPM
 
 ```shell
-npm i --save-dev editorjs-hyperlink
+npm i editorjs-hyperlink -D
+```
+### or via Yarn
+
+```shell
+yarn add editorjs-hyperlink -D
 ```
 
 Include module at your application
@@ -35,17 +38,36 @@ var editor = EditorJS({
   
   tools: {
     ...
+
     hyperlink: {
       class: Hyperlink,
       config: {
-         shortcut: 'CMD+L',
-         target: '_blank', // default null
-         rel: 'nofollow', // default null
+        shortcut: 'CMD+L',
+        target: '_blank',
+        rel: 'nofollow',
+        availableTargets: ['_blank', '_self'],
+        availableRels: ['author', 'noreferrer'],
       }     
     },
+
     ...
   },
 
+  ...
+
+  i18n: {
+    toolNames: {
+      Hyperlink: 'Link'
+    },
+    tools: {
+      hyperlink: {
+        Save: 'Salvar',
+        'Select target': 'Seleziona destinazione',
+        'Select rel': 'Wählen rel'
+      }
+    }
+  }
+  
   ...
 });
 ```
@@ -54,7 +76,11 @@ var editor = EditorJS({
 
 | Field  | Type     | Description      |
 | ------ | -------- | ---------------- |
-| shortcut  | `string` | Shortcut |
+| shortcut  | `string` | Shortcut, defaults to 'CMD+L' |
+| target | `string` | Defines a default target, defaults to null |
+| rel | `string` | Defines a default rel, defaults to null |
+| availableTargets | `string[]` | Available link targets, defaults to all targets |
+| availableRels | `string[]` | Available link rels, defaults to all rels |
 
 ## License
 [MIT](https://tamit.info)
