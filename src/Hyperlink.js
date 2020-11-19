@@ -27,14 +27,14 @@ export default class Hyperlink {
             buttonSave: 'ce-inline-tool-hyperlink--button',
         };
 
-        this.targetAttributes = [
+        this.targetAttributes = this.config.availableTargets || [
             '_blank',   // Opens the linked document in a new window or tab
             '_self',    // Opens the linked document in the same frame as it was clicked (this is default)
             '_parent',  // Opens the linked document in the parent frame
             '_top',     // Opens the linked document in the full body of the window
         ];
 
-        this.relAttributes = [
+        this.relAttributes = this.config.availableRels || [
             'alternate',    //Provides a link to an alternate representation of the document (i.e. print page, translated or mirror)
             'author',       //Provides a link to the author of the document
             'bookmark',     //Permanent URL used for bookmarking
@@ -85,7 +85,7 @@ export default class Hyperlink {
         // Target
         this.nodes.selectTarget = document.createElement('select');
         this.nodes.selectTarget.classList.add(this.CSS.selectTarget);
-        this.addOption(this.nodes.selectTarget, '-- Target --', '');
+        this.addOption(this.nodes.selectTarget, this.i18n.t('Select target'), '');
         for (i=0; i<this.targetAttributes.length; i++) {
             this.addOption(this.nodes.selectTarget, this.targetAttributes[i], this.targetAttributes[i]);
         }
@@ -97,7 +97,7 @@ export default class Hyperlink {
         // Rel
         this.nodes.selectRel = document.createElement('select');
         this.nodes.selectRel.classList.add(this.CSS.selectRel);
-        this.addOption(this.nodes.selectRel, '-- Rel --', '');
+        this.addOption(this.nodes.selectRel, this.i18n.t('Select rel'), '');
         for (i=0; i<this.relAttributes.length; i++) {
             this.addOption(this.nodes.selectRel, this.relAttributes[i], this.relAttributes[i]);
         }
