@@ -16,6 +16,7 @@ export const EDITOR_JS_TOOLS: { [toolName: string]: ToolConstructable | ToolSett
             shortcut: 'CMD+L',
             target: '_blank', // default null
             rel: 'nofollow', // default null
+            validate: false
         },
     },
 };
