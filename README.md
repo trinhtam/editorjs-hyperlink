@@ -47,7 +47,8 @@ var editor = EditorJS({
         rel: 'nofollow',
         availableTargets: ['_blank', '_self'],
         availableRels: ['author', 'noreferrer'],
-      }     
+        validate: false,
+      }
     },
 
     ...
