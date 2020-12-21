@@ -91,6 +91,10 @@ export default class Hyperlink {
         }
 
         if(!!this.config.target) {
+            if(this.targetAttributes.length === 0) {
+                this.addOption(this.nodes.selectTarget, this.config.target, this.config.target);
+            }
+
             this.nodes.selectTarget.value = this.config.target;
         }
 
@@ -101,7 +105,12 @@ export default class Hyperlink {
         for (i=0; i<this.relAttributes.length; i++) {
             this.addOption(this.nodes.selectRel, this.relAttributes[i], this.relAttributes[i]);
         }
+
         if(!!this.config.rel) {
+            if(this.relAttributes.length === 0) {
+                this.addOption(this.nodes.selectTarget, this.config.rel, this.config.rel);
+            }
+
             this.nodes.selectRel.value = this.config.rel;
         }
 
@@ -116,8 +125,15 @@ export default class Hyperlink {
 
         // append
         this.nodes.wrapper.appendChild(this.nodes.input);
-        this.nodes.wrapper.appendChild(this.nodes.selectTarget);
-        this.nodes.wrapper.appendChild(this.nodes.selectRel);
+
+        if(!!this.targetAttributes && this.targetAttributes.length > 0) {
+            this.nodes.wrapper.appendChild(this.nodes.selectTarget);
+        }
+
+        if(!!this.relAttributes && this.relAttributes.length > 0) {
+            this.nodes.wrapper.appendChild(this.nodes.selectRel);
+        }
+
         this.nodes.wrapper.appendChild(this.nodes.buttonSave);
 
         return this.nodes.wrapper;
