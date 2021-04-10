@@ -300,7 +300,7 @@ export default class Hyperlink {
             return link;
         }
 
-        const isInternal = /^\/[^/\s]/.test(link),
+        const isInternal = /^\/[^/\s]?/.test(link),
             isAnchor = link.substring(0, 1) === '#',
             isProtocolRelative = /^\/\/[^/\s]/.test(link);
 
