@@ -80,6 +80,7 @@ export default class Hyperlink {
         this.nodes.input = document.createElement('input');
         this.nodes.input.placeholder = 'https://...';
         this.nodes.input.classList.add(this.CSS.input);
+        this.nodes.input.addEventListener('blur', this.onBlur.bind(this));
 
         // Target
         this.nodes.selectTarget = document.createElement('select');
@@ -219,6 +220,49 @@ export default class Hyperlink {
         this.inputOpened = true;
     }
 
+    onBlur() {
+        const value = this.nodes.input.value || '';
+
+        if (!!this.config.validate && !!this.config.validate === true && !this.validateURL(value)) {
+            this.tooltip.show(this.nodes.input, this.i18n.t('The URL is not valid.'), {
+                placement: 'top',
+            });
+            setTimeout(() => {
+                this.tooltip.hide();
+            }, 1000);
+            return;
+        }
+
+        if (typeof this.config.configure === 'function') {
+            Promise.resolve(this.config.configure(value)).then(data => {
+                if (data.href) {
+                    this.nodes.input.value = data.href;
+                }
+
+                if (typeof data.target === 'string') {
+                    this.nodes.selectTarget.value = data.target;
+                }
+
+                if (typeof data.rels === 'object') {
+                    const rels = {};
+                    if (data.rels instanceof Array) {
+                        for (const rel of data.rels) {
+                            rels[rel] = true;
+                        }
+                    } else {
+                        Object.assign(rels, data.rels);
+                    }
+
+                    for (const checkbox of this.nodes.selectRel.getElementsByClassName(this.CSS.checkboxInput)) {
+                        if (checkbox.dataset.rel in rels) {
+                            checkbox.checked = rels[checkbox.dataset.rel];
+                        }
+                    }
+                }
+            });
+        }
+    }
+
     closeActions(clearSavedSelection = true) {
         if (this.selection.isFakeBackgroundEnabled) {
             const currentSelection = new SelectionUtils();
@@ -263,7 +307,7 @@ export default class Hyperlink {
         }
 
         if (!!this.config.validate && !!this.config.validate === true && !this.validateURL(value)) {
-            this.tooltip.show(this.nodes.input, 'The URL is not valid.', {
+            this.tooltip.show(this.nodes.input, this.i18n.t('The URL is not valid.'), {
                 placement: 'top',
             });
             setTimeout(() => {
