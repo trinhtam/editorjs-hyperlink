@@ -1,5 +1,4 @@
-import SelectionUtils from "./SelectionUtils";
-import css from './Hyperlink.css';
+import SelectionUtils from './SelectionUtils';
 
 export default class Hyperlink {
 
@@ -24,6 +23,8 @@ export default class Hyperlink {
             input: 'ce-inline-tool-hyperlink--input',
             selectTarget: 'ce-inline-tool-hyperlink--select-target',
             selectRel: 'ce-inline-tool-hyperlink--select-rel',
+            checkboxLabel: 'ce-inline-tool-hyperlink--checkbox-label',
+            checkboxInput: 'ce-inline-tool-hyperlink--checkbox-input',
             buttonSave: 'ce-inline-tool-hyperlink--button',
         };
 
@@ -80,18 +81,16 @@ export default class Hyperlink {
         this.nodes.input.placeholder = 'https://...';
         this.nodes.input.classList.add(this.CSS.input);
 
-        let i;
-
         // Target
         this.nodes.selectTarget = document.createElement('select');
         this.nodes.selectTarget.classList.add(this.CSS.selectTarget);
         this.addOption(this.nodes.selectTarget, this.i18n.t('Select target'), '');
-        for (i=0; i<this.targetAttributes.length; i++) {
-            this.addOption(this.nodes.selectTarget, this.targetAttributes[i], this.targetAttributes[i]);
+        for (const targetAttribute of this.targetAttributes) {
+            this.addOption(this.nodes.selectTarget, targetAttribute, targetAttribute);
         }
 
-        if(!!this.config.target) {
-            if(this.targetAttributes.length === 0) {
+        if (!!this.config.target) {
+            if (this.targetAttributes.length === 0) {
                 this.addOption(this.nodes.selectTarget, this.config.target, this.config.target);
             }
 
@@ -99,19 +98,14 @@ export default class Hyperlink {
         }
 
         // Rel
-        this.nodes.selectRel = document.createElement('select');
+        this.nodes.selectRel = document.createElement('div');
         this.nodes.selectRel.classList.add(this.CSS.selectRel);
-        this.addOption(this.nodes.selectRel, this.i18n.t('Select rel'), '');
-        for (i=0; i<this.relAttributes.length; i++) {
-            this.addOption(this.nodes.selectRel, this.relAttributes[i], this.relAttributes[i]);
+        for (const relAttribute of this.relAttributes) {
+            this.addCheckbox(this.nodes.selectRel, relAttribute, relAttribute);
         }
 
-        if(!!this.config.rel) {
-            if(this.relAttributes.length === 0) {
-                this.addOption(this.nodes.selectTarget, this.config.rel, this.config.rel);
-            }
-
-            this.nodes.selectRel.value = this.config.rel;
+        if (!!this.config.rel && this.relAttributes.length === 0) {
+            this.addCheckbox(this.nodes.selectTarget, this.config.rel, this.config.rel, true);
         }
 
         // Button
@@ -126,11 +120,11 @@ export default class Hyperlink {
         // append
         this.nodes.wrapper.appendChild(this.nodes.input);
 
-        if(!!this.targetAttributes && this.targetAttributes.length > 0) {
+        if (!!this.targetAttributes && this.targetAttributes.length > 0) {
             this.nodes.wrapper.appendChild(this.nodes.selectTarget);
         }
 
-        if(!!this.relAttributes && this.relAttributes.length > 0) {
+        if (!!this.relAttributes && this.relAttributes.length > 0) {
             this.nodes.wrapper.appendChild(this.nodes.selectRel);
         }
 
@@ -183,7 +177,7 @@ export default class Hyperlink {
         };
     }
 
-    checkState(selection=null) {
+    checkState(selection = null) {
         const anchorTag = this.selection.findParentTag('A');
         if (anchorTag) {
             this.nodes.button.classList.add(this.CSS.buttonUnlink);
@@ -191,10 +185,12 @@ export default class Hyperlink {
             this.openActions();
             const hrefAttr = anchorTag.getAttribute('href');
             const targetAttr = anchorTag.getAttribute('target');
-            const relAttr = anchorTag.getAttribute('rel');
+            const relAttr = (anchorTag.getAttribute('rel') || '').split(' ');
             this.nodes.input.value = !!hrefAttr ? hrefAttr : '';
             this.nodes.selectTarget.value = !!targetAttr ? targetAttr : '';
-            this.nodes.selectRel.value = !!relAttr ? relAttr : '';
+            for (const checkbox of this.nodes.selectRel.getElementsByClassName(this.CSS.checkboxInput)) {
+                checkbox.checked = relAttr.indexOf(checkbox.dataset.rel) !== -1;
+            }
             this.selection.save();
         } else {
             this.nodes.button.classList.remove(this.CSS.buttonUnlink);
@@ -234,7 +230,9 @@ export default class Hyperlink {
         this.nodes.wrapper.classList.remove(this.CSS.wrapperShowed);
         this.nodes.input.value = '';
         this.nodes.selectTarget.value = '';
-        this.nodes.selectRel.value = '';
+        for (const checkbox of this.nodes.selectRel.getElementsByClassName(this.CSS.checkboxInput)) {
+            checkbox.checked = false;
+        }
 
         if (clearSavedSelection) {
             this.selection.clearSaved();
@@ -249,13 +247,19 @@ export default class Hyperlink {
 
         let value = this.nodes.input.value || '';
         let target = this.nodes.selectTarget.value || '';
-        let rel = this.nodes.selectRel.value || '';
+        const rels = [];
+        for (const checkbox of this.nodes.selectRel.getElementsByClassName(this.CSS.checkboxInput)) {
+            if (checkbox.checked) {
+                rels.push(checkbox.dataset.rel);
+            }
+        }
 
         if (!value.trim()) {
             this.selection.restore();
             this.unlink();
             event.preventDefault();
             this.closeActions();
+            return;
         }
 
         if (!!this.config.validate && !!this.config.validate === true && !this.validateURL(value)) {
@@ -273,19 +277,19 @@ export default class Hyperlink {
         this.selection.restore();
         this.selection.removeFakeBackground();
 
-        this.insertLink(value, target, rel);
+        this.insertLink(value, target, rels.join(' '));
 
         this.selection.collapseToEnd();
         this.inlineToolbar.close();
     }
 
     validateURL(str) {
-        const pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-            '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-            '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-            '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+        const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+            '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+            '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+            '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
         return !!pattern.test(str);
     }
 
@@ -311,23 +315,23 @@ export default class Hyperlink {
         return link;
     }
 
-    insertLink(link, target='', rel='') {
+    insertLink(link, target = '', rel = '') {
         let anchorTag = this.selection.findParentTag('A');
         if (anchorTag) {
             this.selection.expandToTag(anchorTag);
-        }else{
+        } else {
             document.execCommand(this.commandLink, false, link);
             anchorTag = this.selection.findParentTag('A');
         }
-        if(anchorTag) {
-            if(!!target) {
+        if (anchorTag) {
+            if (!!target) {
                 anchorTag['target'] = target;
-            }else{
+            } else {
                 anchorTag.removeAttribute('target');
             }
-            if(!!rel) {
+            if (!!rel) {
                 anchorTag['rel'] = rel;
-            }else{
+            } else {
                 anchorTag.removeAttribute('rel');
             }
         }
@@ -346,10 +350,26 @@ export default class Hyperlink {
         return icon;
     }
 
-    addOption(element, text, value=null) {
+    addOption(element, text, value = null) {
         let option = document.createElement('option');
         option.text = text;
         option.value = value;
         element.add(option);
+    }
+
+    addCheckbox(element, text, value, checked = false) {
+        let input = document.createElement('input');
+        input.type = 'checkbox';
+        input.classList.add(this.CSS.checkboxInput);
+        input.dataset.rel = value;
+        input.checked = checked;
+
+        const label = document.createElement('label');
+        label.classList.add(this.CSS.checkboxLabel);
+
+        label.appendChild(input);
+        label.insertAdjacentText('beforeend', text);
+
+        element.appendChild(label);
     }
 }
