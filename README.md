@@ -64,7 +64,8 @@ var editor = EditorJS({
       hyperlink: {
         Save: 'Salvar',
         'Select target': 'Seleziona destinazione',
-        'Select rel': 'Wählen rel'
+        'Select rel': 'Wählen rel',
+        'The URL is not valid.': 'The URL is not valid.'
       }
     }
   }
@@ -83,6 +84,7 @@ var editor = EditorJS({
 | availableTargets | `string[]` | Available link targets, defaults to all targets.<br>If empty array is provided, the control will be hidden and the default value applied. |
 | availableRels | `string[]` | Available link rels, defaults to all rels.<br>If empty array is provided, the control will be hidden and the default value applied. |
 | validate | `boolean` | Defines if an URL should be validated on saving |
+| configure | `function` | Function that accepts URL and returns attributes object with optional fields: `{href:"https://...",target:"_blank",rels:{nofollow: true}}` |
 
 
 ## License
