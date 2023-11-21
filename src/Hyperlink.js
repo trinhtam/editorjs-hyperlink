@@ -315,10 +315,11 @@ export default class Hyperlink {
         let anchorTag = this.selection.findParentTag('A');
         if (anchorTag) {
             this.selection.expandToTag(anchorTag);
-        }else{
-            document.execCommand(this.commandLink, false, link);
-            anchorTag = this.selection.findParentTag('A');
         }
+
+        document.execCommand(this.commandLink, false, link)
+        anchorTag = this.selection.findParentTag(`A`)
+
         if(anchorTag) {
             if(!!target) {
                 anchorTag['target'] = target;
